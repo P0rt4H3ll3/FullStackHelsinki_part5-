@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import Blog from './components/Blog'
 import Notification from './components/Notification.jsx'
 import BlogForm from './components/BlogForm.jsx'
@@ -37,6 +37,7 @@ const App = () => {
   }, [message])
 
   const createNewBlog = async (newBlogObject) => {
+    blogFormRef.current.toggleVisibility() // creating a new blog, this toggles visibility
     try {
       const newBlog = await blogService.create(newBlogObject)
 
@@ -74,9 +75,10 @@ const App = () => {
     return <LoginForm transferLoginToParent={handleLogin} />
   }
 
+  const blogFormRef = useRef()
   const blogForm = () => {
     return (
-      <Togglable buttonLable="new blog">
+      <Togglable buttonLable="new blog" ref={blogFormRef}>
         <BlogForm createNewBlog={createNewBlog} />
       </Togglable>
     )
