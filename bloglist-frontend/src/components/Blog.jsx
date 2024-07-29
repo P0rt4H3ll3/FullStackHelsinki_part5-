@@ -1,6 +1,6 @@
 import { useState } from 'react'
 
-const Blog = ({ blog }) => {
+const Blog = ({ blog, transferIdToParent }) => {
   const [visible, setVisible] = useState(false)
 
   const blogStyle = {
@@ -15,6 +15,16 @@ const Blog = ({ blog }) => {
     setVisible(!visible)
   }
 
+  const updateLikeHandler = () => {
+    transferIdToParent({
+      title: blog.title,
+      author: blog.author,
+      url: blog.url,
+      likes: blog.likes + 1,
+      id: blog.id
+    })
+  }
+
   return (
     <div style={blogStyle}>
       {' '}
@@ -27,7 +37,7 @@ const Blog = ({ blog }) => {
           <div>{blog.url}</div>
           <div>
             {blog.likes}
-            <button>likes</button>
+            <button onClick={updateLikeHandler}>likes</button>
           </div>
           <div>{blog.user.name}</div>
         </div>

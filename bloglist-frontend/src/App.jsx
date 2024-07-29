@@ -50,6 +50,29 @@ const App = () => {
     }
   }
 
+  const updateBlog = async (updatedBlogObject) => {
+    const { id } = updatedBlogObject
+    try {
+      const updateBlogRes = await blogService.update(id, updatedBlogObject)
+      setBlogs(blogs.map((blog) => (blog.id !== id ? blog : updateBlogRes)))
+      setMessage(
+        `blog ${updateBlogRes.title} by ${updateBlogRes.author} was updated`
+      )
+    } catch (exception) {
+      if (
+        exception.response &&
+        exception.response.data &&
+        exception.response.data.error
+      ) {
+        setMessage(
+          `An Error Occured while updating the blog: ${exception.response.data.error}`
+        )
+      } else {
+        setMessage(`An Error Occured: ${exception.message}`)
+      }
+    }
+  }
+
   const handleLogin = async (username, password) => {
     try {
       const user = await loginService.login({
@@ -96,7 +119,7 @@ const App = () => {
           <button onClick={handleLogout}>Logout</button>
           {blogForm()}
           {blogs.map((blog) => (
-            <Blog key={blog.id} blog={blog} />
+            <Blog key={blog.id} blog={blog} transferIdToParent={updateBlog} />
           ))}
         </div>
       )}
