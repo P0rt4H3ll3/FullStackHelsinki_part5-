@@ -40,6 +40,7 @@ const App = () => {
     blogFormRef.current.toggleVisibility() // creating a new blog, this toggles visibility
     try {
       const newBlog = await blogService.create(newBlogObject)
+      console.log('blog after beeing created', newBlog)
 
       setBlogs(blogs.concat(newBlog))
       setMessage(`new blog ${newBlog.title} by ${newBlog.author} added`)
@@ -66,6 +67,26 @@ const App = () => {
       ) {
         setMessage(
           `An Error Occured while updating the blog: ${exception.response.data.error}`
+        )
+      } else {
+        setMessage(`An Error Occured: ${exception.message}`)
+      }
+    }
+  }
+
+  const deleteBlog = async (id) => {
+    try {
+      await blogService.deleteBlog(id)
+      setBlogs(blogs.filter((blog) => blog.id !== id))
+      setMessage(`deleted blog`)
+    } catch (exception) {
+      if (
+        exception.response &&
+        exception.response.data &&
+        exception.response.data.error
+      ) {
+        setMessage(
+          `An Error Occured while deleting the blog: ${exception.response.data.error}`
         )
       } else {
         setMessage(`An Error Occured: ${exception.message}`)
@@ -121,7 +142,13 @@ const App = () => {
           {blogs
             .sort((a, b) => b.likes - a.likes)
             .map((blog) => (
-              <Blog key={blog.id} blog={blog} transferIdToParent={updateBlog} />
+              <Blog
+                key={blog.id}
+                blog={blog}
+                transferIdToParent={updateBlog}
+                username={user.username}
+                transferIdToDelete={deleteBlog}
+              />
             ))}
         </div>
       )}
