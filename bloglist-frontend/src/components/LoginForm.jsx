@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import PropTypes from 'prop-types'
 
 const LoginForm = ({ transferLoginToParent }) => {
   const [username, setUsername] = useState([''])
@@ -39,4 +40,7 @@ const LoginForm = ({ transferLoginToParent }) => {
   )
 }
 
+LoginForm.propTypes = {
+  transferLoginToParent: PropTypes.func.isRequired
+}
 export default LoginForm

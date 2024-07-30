@@ -40,8 +40,6 @@ const App = () => {
     blogFormRef.current.toggleVisibility() // creating a new blog, this toggles visibility
     try {
       const newBlog = await blogService.create(newBlogObject)
-      console.log('blog after beeing created', newBlog)
-
       setBlogs(blogs.concat(newBlog))
       setMessage(`new blog ${newBlog.title} by ${newBlog.author} added`)
     } catch (exception) {
@@ -78,7 +76,7 @@ const App = () => {
     try {
       await blogService.deleteBlog(id)
       setBlogs(blogs.filter((blog) => blog.id !== id))
-      setMessage(`deleted blog`)
+      setMessage('deleted blog')
     } catch (exception) {
       if (
         exception.response &&
