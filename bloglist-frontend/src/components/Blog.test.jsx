@@ -3,6 +3,7 @@ import userEvent from '@testing-library/user-event'
 import Blog from './Blog'
 
 describe('<Blog />', () => {
+  let container
   const username = 'Vitest_the_mighty'
   const updateBlog = vi.fn()
   const deleteBlog = vi.fn()
@@ -20,7 +21,7 @@ describe('<Blog />', () => {
   }
 
   beforeEach(() => {
-    render(
+    container = render(
       <Blog
         key={blog.id}
         blog={blog}
@@ -28,7 +29,7 @@ describe('<Blog />', () => {
         username={username}
         transferIdToDelete={deleteBlog}
       />
-    )
+    ).container
   })
 
   test('component displays blog title and author but no URL or Likes', async () => {
@@ -41,5 +42,21 @@ describe('<Blog />', () => {
     expect(author).toBeDefined()
     expect(url).toBeNull()
     expect(likes).toBeNull()
+  })
+
+  test('component displays blog title, author, URL and Likes when button clicked', async () => {
+    const user = userEvent.setup()
+    const viewButton = container.querySelector('.BlogToggleButton')
+    await user.click(viewButton)
+
+    const title = screen.getByText(blog.title)
+    const author = screen.getByText(blog.author)
+    const url = screen.queryByText(blog.url)
+    const likes = screen.queryByText(blog.likes)
+
+    expect(title).toBeDefined()
+    expect(author).toBeDefined()
+    expect(url).toBeDefined()
+    expect(likes).toBeDefined()
   })
 })
