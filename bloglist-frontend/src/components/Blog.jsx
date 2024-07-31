@@ -34,18 +34,23 @@ const Blog = ({ blog, transferIdToParent, username, transferIdToDelete }) => {
   return (
     <div style={blogStyle}>
       {' '}
-      <div>
-        {blog.title} {blog.author}
-        <button onClick={toggleVisibility}>{visible ? 'hide' : 'view'}</button>
+      <div className="BlogSmallView">
+        <span>{blog.title}</span>
+        <span>{blog.author}</span>
+        <button onClick={toggleVisibility} className="BlogToggleButton">
+          {visible ? 'hide' : 'view'}
+        </button>
       </div>
       {visible ? (
-        <div>
+        <div className="BlogBigView">
           <div>{blog.url}</div>
           <div>
-            {blog.likes}
+            <span>{blog.likes}</span>
             <button onClick={updateLikeHandler}>likes</button>
           </div>
-          <div>{blog.user.name}</div>
+          <div>
+            <span>{blog.user.name}</span>
+          </div>
           {blog.user.username === username ? (
             <div>
               <button
