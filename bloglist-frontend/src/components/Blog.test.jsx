@@ -46,7 +46,7 @@ describe('<Blog />', () => {
 
   test('component displays blog title, author, URL and Likes when button clicked', async () => {
     const user = userEvent.setup()
-    const viewButton = container.querySelector('.BlogToggleButton')
+    const viewButton = container.querySelector('.blogToggleButton')
     await user.click(viewButton)
 
     const title = screen.getByText(blog.title)
@@ -58,5 +58,17 @@ describe('<Blog />', () => {
     expect(author).toBeDefined()
     expect(url).toBeDefined()
     expect(likes).toBeDefined()
+  })
+
+  test('clicking the button calls event handler once', async () => {
+    const user = userEvent.setup()
+    const viewButton = container.querySelector('.blogToggleButton')
+    await user.click(viewButton)
+
+    const likeButton = container.querySelector('.blogLikeButton')
+    await user.click(likeButton)
+    await user.click(likeButton)
+
+    expect(updateBlog.mock.calls).toHaveLength(2)
   })
 })

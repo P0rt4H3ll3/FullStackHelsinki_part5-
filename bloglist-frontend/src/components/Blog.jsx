@@ -37,7 +37,7 @@ const Blog = ({ blog, transferIdToParent, username, transferIdToDelete }) => {
       <div className="BlogSmallView">
         <span>{blog.title}</span>
         <span>{blog.author}</span>
-        <button onClick={toggleVisibility} className="BlogToggleButton">
+        <button onClick={toggleVisibility} className="blogToggleButton">
           {visible ? 'hide' : 'view'}
         </button>
       </div>
@@ -46,7 +46,9 @@ const Blog = ({ blog, transferIdToParent, username, transferIdToDelete }) => {
           <div>{blog.url}</div>
           <div>
             <span>{blog.likes}</span>
-            <button onClick={updateLikeHandler}>likes</button>
+            <button onClick={updateLikeHandler} className="blogLikeButton">
+              likes
+            </button>
           </div>
           <div>
             <span>{blog.user.name}</span>
