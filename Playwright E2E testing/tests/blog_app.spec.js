@@ -1,5 +1,5 @@
 const { test, expect, describe, beforeEach } = require('@playwright/test')
-const { loginWith } = require('./helper')
+const { loginWith, createBlog } = require('./helper')
 
 describe('Blog App Test', () => {
   beforeEach(async ({ page, request }) => {
@@ -28,7 +28,9 @@ describe('Blog App Test', () => {
 
     test('fails with wrong credentials', async ({ page }) => {
       await loginWith(page, 'TestMaster', 'DoNotTestAtAll')
-      await expect(page.getByText('Tester Mctesti logged in')).not.toBeVisible()
+      await expect(
+        page.getByText('Error : invalid username or password')
+      ).toBeVisible()
     })
 
     describe('when Logged in', () => {
@@ -43,8 +45,27 @@ describe('Blog App Test', () => {
           .getByTestId('blog-url')
           .fill('https://playwright.dev/docs/api-testing')
         await page.getByRole('button', { name: 'create' }).click()
-        await page.pause()
         await expect(page.getByText('Testing Title')).toBeVisible
+      })
+
+      test('blog can be liked', async ({ page }) => {
+        await createBlog(
+          page,
+          'Blog to be liked',
+          'likeable author',
+          'http://likeme.com'
+        )
+        const likeBlog = await page
+          .locator('.blog')
+          .filter({ hasText: 'Blog to be liked' })
+
+        await likeBlog.getByRole('button', { name: 'view' }).click()
+
+        await expect(likeBlog.getByText('likes: 0')).toBeVisible()
+        await likeBlog.getByRole('button', { name: 'like' }).click()
+
+        await expect(likeBlog.getByText('likes: 1')).toBeVisible()
+        await expect(likeBlog.getByText('likes: 0')).not.toBeVisible()
       })
     })
   })
