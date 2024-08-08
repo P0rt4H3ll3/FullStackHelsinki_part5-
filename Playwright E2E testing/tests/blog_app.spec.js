@@ -1,4 +1,5 @@
 const { test, expect, describe, beforeEach } = require('@playwright/test')
+const { loginWith } = require('./helper')
 
 describe('Blog App Test', () => {
   beforeEach(async ({ page, request }) => {
@@ -21,23 +22,30 @@ describe('Blog App Test', () => {
 
   describe('Login', () => {
     test('succeeds with correct credentials', async ({ page }) => {
-      const userTextbox = await page.getByTestId('username')
-      const passTextbox = await page.getByTestId('password')
-      await userTextbox.fill('TestMaster')
-      await passTextbox.fill('PlayWright1')
-      await page.getByRole('button', { name: 'login' }).click()
-
+      await loginWith(page, 'TestMaster', 'PlayWright1')
       await expect(page.getByText('Tester Mctesti logged in')).toBeVisible()
     })
 
     test('fails with wrong credentials', async ({ page }) => {
-      const userTextbox = await page.getByTestId('username')
-      const passTextbox = await page.getByTestId('password')
-      await userTextbox.fill('TestMaster')
-      await passTextbox.fill('DoNotTestAtAll')
-      await page.getByRole('button', { name: 'login' }).click()
-
+      await loginWith(page, 'TestMaster', 'DoNotTestAtAll')
       await expect(page.getByText('Tester Mctesti logged in')).not.toBeVisible()
+    })
+
+    describe('when Logged in', () => {
+      beforeEach(async ({ page }) => {
+        await loginWith(page, 'TestMaster', 'PlayWright1')
+      })
+      test('logged in user can create a blog', async ({ page }) => {
+        await page.getByRole('button', { name: 'new blog' }).click()
+        await page.getByTestId('blog-title').fill('Testing Title')
+        await page.getByTestId('blog-author').fill('Testing Author')
+        await page
+          .getByTestId('blog-url')
+          .fill('https://playwright.dev/docs/api-testing')
+        await page.getByRole('button', { name: 'create' }).click()
+        await page.pause()
+        await expect(page.getByText('Testing Title')).toBeVisible
+      })
     })
   })
 })
