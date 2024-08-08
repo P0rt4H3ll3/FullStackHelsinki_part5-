@@ -12,6 +12,7 @@ describe('Blog App Test', () => {
       }
     })
     await page.goto('/')
+    await page.pause()
   })
 
   test('Login form is shown', async ({ page }) => {
@@ -38,14 +39,17 @@ describe('Blog App Test', () => {
         await loginWith(page, 'TestMaster', 'PlayWright1')
       })
       test('logged in user can create a blog', async ({ page }) => {
-        await page.getByRole('button', { name: 'new blog' }).click()
-        await page.getByTestId('blog-title').fill('Testing Title')
-        await page.getByTestId('blog-author').fill('Testing Author')
-        await page
-          .getByTestId('blog-url')
-          .fill('https://playwright.dev/docs/api-testing')
-        await page.getByRole('button', { name: 'create' }).click()
-        await expect(page.getByText('Testing Title')).toBeVisible
+        await createBlog(
+          page,
+          'Testing Title',
+          'Testing Author',
+          'https://playwright.dev/docs/api-testing'
+        )
+
+        const newBlog = page
+          .locator('.blog')
+          .filter({ hasText: 'Testing Title' })
+        await expect(newBlog.getByText('Testing Title')).toBeVisible()
       })
 
       test('blog can be liked', async ({ page }) => {
@@ -66,6 +70,33 @@ describe('Blog App Test', () => {
 
         await expect(likeBlog.getByText('likes: 1')).toBeVisible()
         await expect(likeBlog.getByText('likes: 0')).not.toBeVisible()
+      })
+
+      test('blog can be deleted', async ({ page }) => {
+        await createBlog(
+          page,
+          'Blog to be deleted',
+          'deletable author',
+          'http://hateme.com'
+        )
+        const deleteBlog = await page
+          .locator('.blog')
+          .filter({ hasText: 'Blog to be deleted' })
+
+        await deleteBlog.getByRole('button', { name: 'view' }).click()
+
+        await expect(
+          deleteBlog.getByRole('button', { name: 'remove' })
+        ).toBeVisible()
+
+        //playwright.dev/docs/dialogs has to be before the button is clicked
+        page.on('dialog', (dialog) => dialog.accept())
+        await deleteBlog.getByRole('button', { name: 'remove' }).click()
+
+        await expect(
+          deleteBlog.getByText('Blog to be deleted')
+        ).not.toBeVisible()
+        await expect(deleteBlog).not.toBeVisible()
       })
     })
   })
