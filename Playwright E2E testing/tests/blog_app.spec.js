@@ -41,18 +41,8 @@ describe('Blog App Test', () => {
       ).toBeVisible()
     })
 
-    describe('when Logged in', () => {
+    describe('when Logged in single user', () => {
       beforeEach(async ({ page }) => {
-        await loginWith(page, 'TestApprentice', 'PlayWright2')
-        await createBlog(
-          page,
-          'Testing of Apprentice, please to not remove',
-          'Testing Lecture',
-          'https://playwright.dev/docs/api-testing'
-        )
-        await likeABlog(page, 'Testing of Apprentice, please to not remove', 1)
-        await logoutWith(page, 'Second Tester')
-
         await loginWith(page, 'TestMaster', 'PlayWright1')
       })
       test('logged in user can create a blog', async ({ page }) => {
@@ -107,7 +97,22 @@ describe('Blog App Test', () => {
         ).not.toBeVisible()
         await expect(deleteBlog).not.toBeVisible()
       })
+    })
 
+    describe('Interaction between User contents', () => {
+      beforeEach(async ({ page }) => {
+        await loginWith(page, 'TestApprentice', 'PlayWright2')
+        await createBlog(
+          page,
+          'Testing of Apprentice, please to not remove',
+          'Testing Lecture',
+          'https://playwright.dev/docs/api-testing'
+        )
+        await likeABlog(page, 'Testing of Apprentice, please to not remove', 1)
+        await logoutWith(page, 'Second Tester')
+
+        await loginWith(page, 'TestMaster', 'PlayWright1')
+      })
       test('cannot delete Blogs from other users', async ({ page }) => {
         const otherBlog = await page
           .locator('.blog')

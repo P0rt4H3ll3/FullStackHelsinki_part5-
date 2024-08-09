@@ -19,10 +19,14 @@ const createBlog = async (page, title, author, url) => {
   await page.getByTestId('blog-author').fill(author)
   await page.getByTestId('blog-url').fill(url)
   await page.getByRole('button', { name: 'create' }).click()
+
+  await page.waitForSelector('.blog')
+
   await page
     .locator('.blog')
     .filter({ hasText: `${title}` })
     .waitFor()
+
   //await page.getByText(`new blog ${title} by ${author} added`).waitFor()
 }
 
@@ -34,6 +38,7 @@ const likeABlog = async (page, title, numberOfLikes) => {
   for (let i = 0; i < numberOfLikes; i++) {
     await blog.getByRole('button', { name: 'like' }).click()
     await blog.getByText(`likes: ${i + 1}`).waitFor()
+    await page.waitForTimeout(500)
   }
 
   await expect(blog.getByText(`likes: ${numberOfLikes}`)).toBeVisible()
