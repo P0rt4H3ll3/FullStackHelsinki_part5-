@@ -1,3 +1,5 @@
+import PropTypes from 'prop-types'
+
 const Notification = ({ message }) => {
   if (message === null) return null
   return message.includes('Error') ? (
@@ -7,4 +9,7 @@ const Notification = ({ message }) => {
   )
 }
 
+Notification.propTypes = {
+  message: PropTypes.string
+}
 export default Notification
