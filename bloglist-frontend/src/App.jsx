@@ -61,7 +61,7 @@ const App = () => {
     } catch (exception) {
       setMessage(`Error : ${exception.response.data.error}`)
     }
-    //user Username Phillip1 use password Password
+   
   }
 
   const handleLogout = () => {
