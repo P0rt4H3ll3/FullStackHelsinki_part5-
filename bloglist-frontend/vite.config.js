@@ -6,10 +6,16 @@ export default defineConfig({
   plugins: [react()],
   server: {
     proxy: {
-      "/api": {
-        target: "http://localhost:3003",
-        changeOrigin: true,
-      },
-    },
+      '/api': {
+        target: 'http://localhost:3003',
+        changeOrigin: true
+      }
+    }
   },
+  test: {
+    environment: 'jsdom',
+    globals: true,
+    setupFiles: './testSetup.js'
+  }
 })
+//With globals: true, there is no need to import keywords such as describe, test and expect into the tests.
