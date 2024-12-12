@@ -1,12 +1,12 @@
 import { useState } from 'react'
 
-const LoginForm = ({ handleLogin }) => {
+const LoginForm = ({ transferLoginToParent }) => {
   const [username, setUsername] = useState([''])
   const [password, setPassword] = useState([''])
 
   const handleSubmit = (event) => {
     event.preventDefault()
-    handleLogin(username, password)
+    transferLoginToParent(username, password)
     setPassword('')
     setUsername('')
   }
